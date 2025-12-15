@@ -1,49 +1,548 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
 export default function Home() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const rooms = [
+    {
+      id: 1,
+      category: 'Budget Room',
+      nonAc: 1199,
+      ac: 1700,
+      description: 'Perfect for budget-conscious travelers seeking comfort',
+      amenities: ['Basic Furnishings', 'Fan', 'Attached Bathroom', 'Free WiFi'],
+      image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23e8d4b8%22 width=%22400%22 height=%22300%22/%3E%3Crect fill=%22%238b4513%22 x=%2250%22 y=%2250%22 width=%22100%22 height=%2280%22/%3E%3Crect fill=%22%238b4513%22 x=%22250%22 y=%2250%22 width=%22100%22 height=%2280%22/%3E%3Crect fill=%22%23d4af37%22 x=%2220%22 y=%22150%22 width=%22360%22 height=%22130%22/%3E%3Ctext x=%22200%22 y=%22220%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22%231a1a1a%22 font-weight=%22bold%22%3EComfortable Budget Room%3C/text%3E%3C/svg%3E',
+    },
+    {
+      id: 2,
+      category: 'Semi Deluxe Room',
+      nonAc: 1599,
+      ac: 2099,
+      description: 'Experience enhanced comfort with modern amenities',
+      amenities: ['Premium Bedding', 'AC/Cooler', 'Hot Water', 'LED TV', 'Free WiFi'],
+      image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23d4c5b9%22 width=%22400%22 height=%22300%22/%3E%3Crect fill=%22%238b4513%22 x=%2240%22 y=%2240%22 width=%22120%22 height=%2290%22/%3E%3Crect fill=%22%238b4513%22 x=%22240%22 y=%2240%22 width=%22120%22 height=%2290%22/%3E%3Crect fill=%22%23d4af37%22 x=%2210%22 y=%22150%22 width=%22380%22 height=%22140%22/%3E%3Ctext x=%22200%22 y=%22220%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22%231a1a1a%22 font-weight=%22bold%22%3ESemi Deluxe Room%3C/text%3E%3C/svg%3E',
+    },
+    {
+      id: 3,
+      category: 'Deluxe Room',
+      nonAc: 2099,
+      ac: 2599,
+      description: 'Premium luxury experience with all modern conveniences',
+      amenities: ['Luxury Bedding', 'AC with Climate Control', '24/7 Hot Water', 'Smart TV', 'Premium Toiletries'],
+      image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23dcc9b6%22 width=%22400%22 height=%22300%22/%3E%3Crect fill=%22%238b4513%22 x=%2330%22 y=%2230%22 width=%22140%22 height=%22100%22/%3E%3Crect fill=%22%238b4513%22 x=%22230%22 y=%2230%22 width=%22140%22 height=%22100%22/%3E%3Crect fill=%22%23d4af37%22 width=%22400%22 height=%22160%22 y=%22140%22/%3E%3Ctext x=%22200%22 y=%22220%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22%231a1a1a%22 font-weight=%22bold%22%3EPremium Deluxe Room%3C/text%3E%3C/svg%3E',
+    },
+  ];
+
+  const amenities = [
+    { icon: '📡', title: 'Free WiFi', desc: 'High-speed internet' },
+    { icon: '🚗', title: 'Free Parking', desc: 'Secure parking facility' },
+    { icon: '💧', title: '24/7 Hot Water', desc: 'Always available' },
+    { icon: '👨‍👩‍👧‍👦', title: 'Family-Friendly', desc: 'Perfect for families' },
+    { icon: '✨', title: 'Spotless Cleanliness', desc: 'Hygiene guaranteed' },
+    { icon: '🔒', title: '24/7 Security', desc: 'Safe & secure stay' },
+  ];
+
+  const reviews = [
+    {
+      name: 'Rajesh Kumar',
+      rating: 5,
+      text: 'Excellent stay! Clean rooms, friendly staff, and great value for money. Highly recommended!',
+      date: '2 weeks ago',
+    },
+    {
+      name: 'Priya Singh',
+      rating: 5,
+      text: 'Perfect place for our family vacation. Good rooms and location is convenient.',
+      date: '1 month ago',
+    },
+    {
+      name: 'Amit Patel',
+      rating: 4,
+      text: 'Very comfortable and affordable. The WiFi is fast and staff is helpful.',
+      date: '3 weeks ago',
+    },
+  ];
+
+  const faqs = [
+    {
+      question: 'What are the check-in and check-out times?',
+      answer: 'Check-in is from 1:00 PM and check-out is till 11:00 AM. Early check-in and late check-out available upon request.',
+    },
+    {
+      question: 'Do you provide WiFi?',
+      answer: 'Yes! We offer high-speed free WiFi in all rooms and common areas.',
+    },
+    {
+      question: 'Is parking available?',
+      answer: 'Yes, we provide free secure parking for all our guests.',
+    },
+    {
+      question: 'Can I modify or cancel my booking?',
+      answer: 'Yes, cancellations made 24 hours before check-in are free. Modifications can be made anytime.',
+    },
+    {
+      question: 'Do you offer group discounts?',
+      answer: 'Yes! Contact us directly for group bookings and special discounts.',
+    },
+    {
+      question: 'Is there a restaurant on-site?',
+      answer: 'We have a common area with tea/coffee facilities. Many restaurants are nearby.',
+    },
+  ];
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const whatsappClick = () => {
+    window.open('https://wa.me/919712227011?text=Hi%20Hotel%20Sai%20Darshan%2C%20I%20want%20to%20book%20a%20room', '_blank');
+  };
+
+  const callClick = () => {
+    window.location.href = 'tel:+919712227011';
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-center gap-8 py-32 px-16 bg-white dark:bg-black">
-        <svg
-          viewBox="0 0 69 26"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="fill-black dark:fill-white"
-        >
-          <path d="M13.7917 24.3604C12.4622 25.3549 10.7895 25.8884 8.82032 25.8884C6.66971 25.8884 4.87412 25.3543 3.47587 24.3604H13.7917Z"></path>
-          <path d="M27.8204 24.3604C26.802 25.2894 25.534 25.8884 24.1756 25.8884C22.4188 25.8884 21.02 25.339 20.108 24.3604H27.8204Z"></path>
-          <path d="M44.5726 24.3604C43.0194 25.3511 41.0762 25.8884 38.8367 25.8884C36.5972 25.8884 34.6541 25.3511 33.1008 24.3604H44.5726Z"></path>
-          <path d="M6.10452 21.7838C6.64469 22.5408 7.32257 23.0964 8.12748 23.4234H2.40008C1.94592 22.9414 1.55318 22.3936 1.22435 21.7838H6.10452Z"></path>
-          <path d="M15.9753 21.7838C15.6457 22.3936 15.2602 22.9415 14.8213 23.4234H11.8608C12.7015 23.0973 13.4264 22.543 14.0227 21.7838H15.9753Z"></path>
-          <path d="M23.2016 21.7838C23.3205 22.5267 23.6272 23.0906 24.0875 23.4234H19.4507C19.2008 22.9377 19.0348 22.3887 18.9611 21.7838H23.2016Z"></path>
-          <path d="M29.6415 21.7838C29.3929 22.3649 29.0672 22.9198 28.6798 23.4234H26.2913C26.809 23.0921 27.2884 22.5303 27.6965 21.7838H29.6415Z"></path>
-          <path d="M34.7756 21.7838C35.1876 22.498 35.7076 23.0447 36.3327 23.4234H31.8901C31.3725 22.9406 30.9182 22.3925 30.5327 21.7838H34.7756Z"></path>
-          <path d="M47.1403 21.7838C46.7548 22.3925 46.3005 22.9406 45.7829 23.4234H41.3477C41.9765 23.0447 42.5011 22.4979 42.9178 21.7838H47.1403Z"></path>
-          <path d="M4.97293 19.2072C5.1237 19.8073 5.31836 20.3552 5.55486 20.8468H0.788749C0.585257 20.3346 0.420002 19.7875 0.293988 19.2072H4.97293Z"></path>
-          <path d="M16.9458 19.2072C16.8042 19.7876 16.6278 20.3347 16.4179 20.8468H14.6376C14.9063 20.3562 15.1356 19.8083 15.3244 19.2072H16.9458Z"></path>
-          <path d="M23.146 20.8468H18.9172V19.2072H23.146V20.8468Z"></path>
-          <path d="M33.879 19.2072C33.9937 19.8097 34.1454 20.3562 34.3337 20.8468H30.0171C30.0067 20.8251 29.9961 20.8035 29.9859 20.7817C29.9802 20.8034 29.9741 20.8251 29.9682 20.8468H28.1326C28.3289 20.3505 28.4984 19.8012 28.6354 19.2072H33.879Z"></path>
-          <path d="M48.2582 19.2072C48.1017 19.7867 47.8998 20.3339 47.6561 20.8468H43.3651C43.5558 20.3562 43.71 19.8097 43.8264 19.2072H48.2582Z"></path>
-          <path d="M4.61127 16.6306C4.63883 17.207 4.69545 17.7543 4.78 18.2703H0.128844C0.056725 17.7466 0.0134713 17.1997 0 16.6306H4.61127Z"></path>
-          <path d="M17.2781 17.2464C17.2423 17.5969 17.1958 17.9383 17.1392 18.2703H15.5758C15.6704 17.8506 15.7479 17.4096 15.8073 16.9484L17.2781 17.2464Z"></path>
-          <path d="M23.146 18.2703H18.9172V16.6306H23.146V18.2703Z"></path>
-          <path d="M33.6225 16.6306C33.6374 17.2111 33.6755 17.7576 33.7361 18.2703H28.8183C28.902 17.7493 28.9618 17.2012 28.9946 16.6306H33.6225Z"></path>
-          <path d="M48.643 16.6306C48.6191 17.199 48.5595 17.7459 48.4664 18.2703H43.9719C44.0335 17.7576 44.072 17.211 44.0873 16.6306H48.643Z"></path>
-          <path d="M23.146 6.89115H28.9193V8.56739H23.146V15.6937H18.9172V8.56739H15.8592L16.4324 14.49L14.9983 14.6762C14.0055 9.75933 13.1963 8.00865 9.8132 7.85966C6.45181 7.85968 4.61542 10.5441 4.592 15.6937H0.00268892C0.175472 9.48821 3.32011 6.14613 8.93079 6.14613C9.77653 6.14614 10.7326 6.25781 11.8725 6.51853C13.152 6.78855 14.2702 6.89115 15.697 6.89115C19.7286 6.89112 21.3074 4.20914 22.0796 0H23.146V6.89115Z"></path>
-          <path d="M38.8367 6.14613C44.6383 6.14616 48.4971 9.86614 48.6497 15.6937H44.092C44.0101 10.6034 42.1785 7.97132 38.8367 7.97128C35.5308 7.97128 33.6998 10.6034 33.618 15.6937H29.0235C29.1761 9.86611 33.0351 6.14613 38.8367 6.14613Z"></path>
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M58.5142 19.14C59.5559 19.14 60.9024 19.5091 60.9532 22.5701H58.3236C57.7138 22.5701 57.3201 22.734 57.3709 23.3763C57.5233 25.2074 57.9934 25.385 58.6413 25.385C59.3145 25.385 59.937 25.18 60.2545 23.9229C60.28 23.8546 60.4706 23.8545 60.5468 23.8545C60.6103 23.8545 60.8389 23.8546 60.8135 23.9229C60.4197 25.6993 59.6702 26 58.6413 26C57.5996 26 55.9862 25.631 55.9862 22.5701C55.9862 19.4954 57.536 19.14 58.5142 19.14ZM58.5142 19.5773C57.9044 19.5773 57.4217 19.9736 57.3455 22.0917H59.5813C59.5051 19.9737 59.1367 19.5773 58.5142 19.5773Z"
-          ></path>
-          <path d="M63.258 19.2631C63.3215 19.2631 63.3342 19.4543 63.3342 19.509C63.3342 19.55 63.3216 19.7276 63.258 19.7276C62.6737 19.7276 62.7118 20.083 62.8262 20.5066C62.9913 21.1899 63.5121 22.9663 63.6137 23.4309C63.6391 23.5676 63.7662 23.5539 63.817 23.4309L65.0238 20.1786C65.0365 20.124 65.1763 20.124 65.2525 20.124C65.3287 20.124 65.4685 20.124 65.4939 20.1786L66.6625 23.4309C66.7006 23.5539 66.8404 23.5539 66.8658 23.4309L67.6661 20.5203C67.7931 20.083 67.8186 19.7276 67.2342 19.7276C67.1834 19.7276 67.1707 19.5773 67.1707 19.509C67.1707 19.427 67.1834 19.2631 67.2342 19.2631H68.9238C68.9746 19.2631 69 19.427 69 19.509C69 19.5773 68.9746 19.7276 68.9238 19.7276C68.3903 19.7276 68.2378 20.1239 68.1235 20.5339C67.9965 20.9438 66.5613 25.8484 66.5482 25.9043C66.5228 25.959 66.4339 25.959 66.3704 25.959C66.3069 25.959 66.2179 25.9317 66.2052 25.9043C66.1036 25.426 65.0619 22.6247 64.9222 22.1054C64.9095 21.9824 64.7443 21.9824 64.7062 22.1191C64.6554 22.2286 63.3347 25.8485 63.3216 25.9043C63.3089 25.959 63.2326 25.959 63.1564 25.959C63.0802 25.959 63.004 25.959 62.9786 25.9043L61.4033 20.5339C61.2763 20.0693 61.1111 19.7276 60.5649 19.7276C60.5268 19.7276 60.5014 19.591 60.5014 19.509C60.5014 19.4133 60.5268 19.2631 60.5649 19.2631H63.258Z"></path>
-          <path d="M53.2441 19.1264C54.0064 19.1264 55.2766 19.3724 55.2766 21.2718V24.5105C55.2766 24.9204 55.3275 25.3167 55.8991 25.3167C55.9499 25.3167 55.9627 25.4807 55.9627 25.549C55.9627 25.631 55.9499 25.795 55.8991 25.795H53.2823C53.2441 25.795 53.2187 25.6584 53.2187 25.5627C53.2187 25.4671 53.2314 25.3167 53.2823 25.3167C53.8666 25.3167 53.892 24.9204 53.892 24.5105V21.5178C53.892 19.9053 53.4347 19.8507 53.0536 19.8507C52.4184 19.8507 52.2024 20.3699 52.0119 20.7525V24.5105C52.0119 24.9341 52.0627 25.3167 52.6598 25.3167C52.7106 25.3167 52.7233 25.508 52.7233 25.549C52.7233 25.6037 52.6979 25.795 52.6598 25.795H49.8777C49.8269 25.795 49.8015 25.6583 49.8015 25.549C49.8015 25.4671 49.8269 25.3168 49.8777 25.3167C50.6526 25.3167 50.7034 24.9068 50.7034 24.5105V20.5476C50.7034 20.0693 50.5764 19.7413 49.8777 19.7413C49.8269 19.7413 49.8015 19.6047 49.8015 19.4954C49.8015 19.3861 49.8269 19.2631 49.8777 19.2631H51.6308C51.8213 19.2631 51.9611 19.3314 51.9992 19.673C52.0119 19.7687 52.0754 19.796 52.1389 19.7276C52.3422 19.4817 52.6598 19.1264 53.2441 19.1264Z"></path>
-          <path d="M48.0394 25.9621H46.8V24.629H48.0394V25.9621Z"></path>
-        </svg>
-        <div className="flex flex-col items-center text-center">
-          <h1 className="max-w-xs text-2xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Ready for your first task
-          </h1>
+    <div className="min-h-screen bg-white">
+      {/* Schema Markup */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Hotel',
+          name: 'Hotel Sai Darshan',
+          description: 'Affordable luxury hotel with clean, comfortable rooms',
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: 'Hotel Sai Darshan',
+            addressLocality: 'Your City',
+            addressCountry: 'IN',
+            postalCode: '000000',
+          },
+          telephone: '+919712227011',
+          email: 'info@hotelsaidarshan.com',
+          priceRange: '₹₹',
+          starRating: {
+            '@type': 'Rating',
+            ratingValue: '4.5',
+            bestRating: '5',
+          },
+          image: 'https://hotelsaidarshan.com/hotel-image.jpg',
+          url: 'https://hotelsaidarshan.com',
+          amenities: ['WiFi', 'Parking', 'Hot Water', 'Security', 'Cleanliness', 'Family-friendly'],
+        })}
+      </script>
+
+      {/* Navigation */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-white shadow-lg' : 'bg-white'
+      }`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl font-bold text-amber-900">🏨</span>
+              <h1 className="text-xl font-bold text-amber-900">Hotel Sai Darshan</h1>
+            </div>
+            <div className="hidden md:flex space-x-8">
+              <button onClick={() => scrollToSection('home')} className="text-gray-700 hover:text-amber-900 font-medium transition">Home</button>
+              <button onClick={() => scrollToSection('rooms')} className="text-gray-700 hover:text-amber-900 font-medium transition">Rooms & Pricing</button>
+              <button onClick={() => scrollToSection('gallery')} className="text-gray-700 hover:text-amber-900 font-medium transition">Gallery</button>
+              <button onClick={() => scrollToSection('location')} className="text-gray-700 hover:text-amber-900 font-medium transition">Location</button>
+              <button onClick={() => scrollToSection('contact')} className="text-gray-700 hover:text-amber-900 font-medium transition">Contact</button>
+            </div>
+            <button
+              onClick={whatsappClick}
+              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition transform hover:scale-105"
+            >
+              WhatsApp
+            </button>
+          </div>
         </div>
-      </main>
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="pt-24 pb-12 px-4 bg-gradient-to-b from-gray-900 to-gray-800 text-white relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <svg className="w-full h-full" viewBox="0 0 1200 600">
+            <pattern id="pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+              <circle cx="50" cy="50" r="30" fill="#d4af37" opacity="0.1" />
+            </pattern>
+            <rect width="1200" height="600" fill="url(#pattern)" />
+          </svg>
+        </div>
+
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          <div className="mb-8 inline-block">
+            <span className="text-5xl md:text-7xl font-bold text-amber-400">Hotel Sai Darshan</span>
+          </div>
+          <p className="text-lg md:text-2xl mb-6 text-gray-200">
+            Premium Comfort at Affordable Rates
+          </p>
+          <p className="text-md md:text-lg mb-8 text-gray-300 max-w-2xl mx-auto">
+            Your perfect stay awaits! Clean, comfortable, and luxurious rooms for couples, families, and business travelers.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <button
+              onClick={whatsappClick}
+              className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-bold text-lg transition transform hover:scale-105"
+            >
+              💬 Book on WhatsApp
+            </button>
+            <button
+              onClick={callClick}
+              className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-lg font-bold text-lg transition transform hover:scale-105"
+            >
+              📞 Call Now
+            </button>
+          </div>
+          <div className="text-amber-400 font-bold text-lg">
+            📞 +91 9712227011 | 24/7 Available
+          </div>
+        </div>
+      </section>
+
+      {/* Rooms Section */}
+      <section id="rooms" className="py-16 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
+            Rooms & Pricing
+          </h2>
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            Choose from our carefully designed rooms. All rooms include free WiFi, 24/7 hot water, and security.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {rooms.map((room) => (
+              <div
+                key={room.id}
+                className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition transform hover:scale-105 overflow-hidden border-t-4 border-amber-600"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={room.image}
+                  alt={room.category}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-6">
+                  <h3 className="text-2xl font-bold text-amber-900 mb-2">{room.category}</h3>
+                  <p className="text-gray-600 mb-4">{room.description}</p>
+
+                  <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+                    <div className="flex justify-between items-center mb-3">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">Non-AC Room</p>
+                        <p className="text-2xl font-bold text-amber-600">₹{room.nonAc}</p>
+                        <p className="text-xs text-gray-500">per night</p>
+                      </div>
+                      <div className="border-l-2 border-amber-600"></div>
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">AC Room</p>
+                        <p className="text-2xl font-bold text-amber-700">₹{room.ac}</p>
+                        <p className="text-xs text-gray-500">per night</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-gray-800 mb-3">Room Features:</h4>
+                    <ul className="space-y-2">
+                      {room.amenities.map((amenity, idx) => (
+                        <li key={idx} className="text-sm text-gray-700 flex items-center">
+                          <span className="text-amber-600 mr-2">✓</span> {amenity}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <button
+                    onClick={whatsappClick}
+                    className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-bold py-3 rounded-lg transition transform hover:scale-105"
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Amenities Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
+            Premium Amenities & Services
+          </h2>
+          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+            We provide everything you need for a comfortable and memorable stay.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {amenities.map((amenity, idx) => (
+              <div
+                key={idx}
+                className="text-center p-6 bg-gradient-to-b from-amber-50 to-white rounded-lg shadow hover:shadow-lg transition border border-amber-100"
+              >
+                <div className="text-5xl mb-4">{amenity.icon}</div>
+                <h3 className="text-xl font-bold text-amber-900 mb-2">{amenity.title}</h3>
+                <p className="text-gray-600">{amenity.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery Section */}
+      <section id="gallery" className="py-16 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
+            Gallery
+          </h2>
+          <p className="text-center text-gray-600 mb-12">View our beautiful rooms and facilities</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { title: 'Luxury Bedroom', emoji: '🛏️' },
+              { title: 'Modern Bathroom', emoji: '🚿' },
+              { title: 'Common Area', emoji: '🛋️' },
+              { title: 'Reception', emoji: '🏛️' },
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className="h-64 bg-gradient-to-br from-amber-100 to-amber-50 rounded-lg shadow hover:shadow-lg transition flex items-center justify-center border-2 border-amber-200"
+              >
+                <div className="text-center">
+                  <div className="text-6xl mb-4">{item.emoji}</div>
+                  <p className="text-xl font-semibold text-amber-900">{item.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Location Section */}
+      <section id="location" className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
+            Location & Map
+          </h2>
+          <p className="text-center text-gray-600 mb-12">
+            Conveniently located near major landmarks and attractions
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Map Placeholder */}
+            <div className="bg-gray-200 rounded-lg shadow-lg h-96 flex items-center justify-center border-4 border-amber-200">
+              <div className="text-center">
+                <div className="text-6xl mb-4">🗺️</div>
+                <p className="text-xl font-semibold text-gray-700">Interactive Google Maps</p>
+                <p className="text-gray-600 mt-2">Map embed available when location is finalized</p>
+              </div>
+            </div>
+
+            {/* Address & Directions */}
+            <div>
+              <div className="bg-gray-50 p-8 rounded-lg shadow-lg border-l-4 border-amber-600 mb-6">
+                <h3 className="text-2xl font-bold text-amber-900 mb-4">📍 Address</h3>
+                <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                  Hotel Sai Darshan<br />
+                  [Location to be Updated]<br />
+                  India
+                </p>
+                <a
+                  href="https://maps.google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-lg font-bold transition transform hover:scale-105"
+                >
+                  📍 Get Directions
+                </a>
+              </div>
+
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-8 rounded-lg shadow-lg border border-amber-200">
+                <h3 className="text-2xl font-bold text-amber-900 mb-4">🎯 Contact Us</h3>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-gray-600 font-semibold">WhatsApp / Call:</p>
+                    <a
+                      href="https://wa.me/919712227011"
+                      className="text-2xl font-bold text-green-600 hover:text-green-700 transition"
+                    >
+                      +91 97122 27011
+                    </a>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 font-semibold">Available:</p>
+                    <p className="text-gray-700">24/7 for bookings & inquiries</p>
+                  </div>
+                  <button
+                    onClick={whatsappClick}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold transition"
+                  >
+                    💬 Chat on WhatsApp
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews Section */}
+      <section className="py-16 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
+            Guest Reviews
+          </h2>
+          <p className="text-center text-gray-600 mb-12">
+            See what our happy guests have to say
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {reviews.map((review, idx) => (
+              <div key={idx} className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-amber-100">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {review.name[0]}
+                  </div>
+                  <div className="ml-4">
+                    <p className="font-bold text-gray-900">{review.name}</p>
+                    <p className="text-sm text-gray-500">{review.date}</p>
+                  </div>
+                </div>
+                <div className="mb-4">
+                   {[...Array(review.rating)].map((_, i) => (
+                     <span key={i} className="text-amber-400 text-lg">★</span>
+                   ))}
+                 </div>
+                 <p className="text-gray-700 italic">&quot;{review.text}&quot;</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-4 text-gray-900">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-center text-gray-600 mb-12">
+            Find answers to common questions about our hotel
+          </p>
+
+          <div className="space-y-4">
+            {faqs.map((faq, idx) => (
+              <details
+                key={idx}
+                className="bg-gray-50 border border-amber-200 rounded-lg p-6 hover:bg-gray-100 transition"
+              >
+                <summary className="font-bold text-lg text-amber-900 cursor-pointer flex items-center">
+                  <span className="text-2xl mr-4">❓</span>
+                  {faq.question}
+                </summary>
+                <p className="text-gray-700 mt-4 ml-10">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-16 px-4 bg-gradient-to-r from-amber-600 to-amber-700 text-white">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-6">Ready to Book Your Stay?</h2>
+          <p className="text-lg mb-8 opacity-90">
+            Contact us now for exclusive offers and instant booking
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <button
+              onClick={whatsappClick}
+              className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105"
+            >
+              💬 WhatsApp Now
+            </button>
+            <button
+              onClick={callClick}
+              className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105"
+            >
+              📞 Call Now
+            </button>
+          </div>
+
+          <div className="text-lg font-semibold">
+            📞 +91 97122 27011 (Available 24/7)
+          </div>
+        </div>
+      </section>
+
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
+        <button
+          onClick={whatsappClick}
+          className="bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl transition transform hover:scale-110"
+          title="Chat on WhatsApp"
+        >
+          💬
+        </button>
+        <button
+          onClick={callClick}
+          className="bg-red-500 hover:bg-red-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-2xl transition transform hover:scale-110"
+          title="Call us"
+        >
+          📞
+        </button>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h3 className="text-xl font-bold mb-4 text-amber-400">Hotel Sai Darshan</h3>
+              <p className="text-gray-400">Your affordable luxury stay destination</p>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><button onClick={() => scrollToSection('home')} className="hover:text-white transition">Home</button></li>
+                <li><button onClick={() => scrollToSection('rooms')} className="hover:text-white transition">Rooms</button></li>
+                <li><button onClick={() => scrollToSection('location')} className="hover:text-white transition">Location</button></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Contact</h4>
+              <p className="text-gray-400 mb-2">📞 +91 97122 27011</p>
+              <p className="text-gray-400">Available 24/7</p>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Follow Us</h4>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white transition">Facebook</a>
+                <a href="#" className="text-gray-400 hover:text-white transition">Instagram</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-700 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 Hotel Sai Darshan. All rights reserved. | Premium Budget Hotel</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
