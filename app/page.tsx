@@ -1,47 +1,72 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Home() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [hoveredRoom, setHoveredRoom] = useState<number | null>(null);
+  const [scrollY, setScrollY] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
     };
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const rooms = [
     {
       id: 1,
       title: 'Budget Room',
-      nonAc: '₹1199',
-      ac: '₹1700',
-      description: 'Thoughtfully appointed comfort for the discerning traveler',
-      amenities: ['Comfortable Bedding', 'Attached Bathroom', 'Free Wi-Fi'],
+      tagline: 'Comfort Refined',
+      nonAc: 1199,
+      ac: 1700,
+      description: 'Thoughtfully curated for the discerning traveler',
+      features: ['Premium Bedding', 'Free Wi-Fi', 'Attached Bath', 'Daily Service'],
     },
     {
       id: 2,
-      title: 'Semi Deluxe Room',
-      nonAc: '₹1599',
-      ac: '₹2099',
-      description: 'Elevated comfort with premium appointments and amenities',
-      amenities: ['Premium Bedding', 'AC/Cooler', 'Modern Furnishings'],
+      title: 'Semi Deluxe',
+      tagline: 'Elevated Living',
+      nonAc: 1599,
+      ac: 2099,
+      description: 'Where comfort meets sophisticated design',
+      features: ['Luxury Bedding', 'AC/Cooler', 'Modern Furnishings', '24/7 Support'],
     },
     {
       id: 3,
       title: 'Deluxe Room',
-      nonAc: '₹2099',
-      ac: '₹2599',
-      description: 'The finest accommodations for an exceptional experience',
-      amenities: ['Luxury Bedding', 'Climate Control AC', '24/7 Hot Water'],
+      tagline: 'Pure Luxury',
+      nonAc: 2099,
+      ac: 2599,
+      description: 'The pinnacle of refined hospitality',
+      features: ['Premium Linens', 'Climate AC', '24/7 Hot Water', 'Smart TV'],
     },
   ];
 
+  const amenities = [
+    { icon: '✨', label: 'Immaculate Cleanliness', desc: 'Premium hygiene standards' },
+    { icon: '📡', label: 'High-Speed WiFi', desc: 'Seamless connectivity' },
+    { icon: '🅿️', label: 'Secure Parking', desc: 'Protected spaces' },
+    { icon: '👥', label: 'Family Friendly', desc: 'Perfect for all guests' },
+    { icon: '🛎️', label: 'Concierge Service', desc: '24/7 assistance' },
+    { icon: '🌟', label: 'Premium Experience', desc: 'Luxury at its finest' },
+  ];
+
   const whatsappClick = () => {
-    window.open('https://wa.me/919712227011?text=Hi%20Hotel%20Sai%20Darshan%2C%20I%20would%20like%20to%20make%20a%20reservation', '_blank');
+    window.open('https://wa.me/919712227011?text=I%20would%20like%20to%20reserve%20a%20room%20at%20Hotel%20Sai%20Darshan', '_blank');
   };
 
   const callClick = () => {
@@ -53,183 +78,222 @@ export default function Home() {
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const parallaxStyle = (speed: number) => ({
+    transform: `translateY(${scrollY * speed}px)`,
+  });
+
   return (
-    <div className="min-h-screen bg-stone-50">
-      {/* SEO Schema */}
+    <div ref={containerRef} className="relative overflow-hidden bg-stone-950">
+      {/* Schema Markup */}
       <script type="application/ld+json">
         {JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'Hotel',
           name: 'Hotel Sai Darshan',
-          description: 'Ultra-luxury boutique hotel with refined accommodations',
-          address: {
-            '@type': 'PostalAddress',
-            addressCountry: 'IN',
-          },
+          description: 'Ultra-luxury boutique hotel experience',
+          address: { '@type': 'PostalAddress', addressCountry: 'IN' },
           telephone: '+919712227011',
           priceRange: '₹₹',
           starRating: { '@type': 'Rating', ratingValue: '4.5' },
-          amenities: ['WiFi', 'Parking', '24/7 Hot Water', 'Family-Friendly'],
         })}
       </script>
 
-      {/* Navigation */}
-      <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          isScrolled
-            ? 'bg-stone-50/95 backdrop-blur-sm border-b border-stone-200 shadow-sm'
-            : 'bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
-          <h1 className="text-xl font-serif text-stone-900 font-light tracking-wide">
-            HOTEL SAI DARSHAN
-          </h1>
-          <div className="hidden md:flex items-center space-x-12">
-            {['Rooms', 'Location', 'Contact'].map((item) => (
-              <button
-                key={item}
-                onClick={() => scrollToSection(item.toLowerCase())}
-                className="text-sm text-stone-700 hover:text-stone-900 transition-colors duration-300 font-light tracking-wide"
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={whatsappClick}
-            className="text-sm text-stone-700 hover:text-stone-900 transition-colors duration-300 font-light tracking-wide"
-          >
-            Reserve
-          </button>
+      {/* Custom Cursor Glow */}
+      <div
+        className="pointer-events-none fixed w-8 h-8 rounded-full mix-blend-screen z-50 hidden lg:block"
+        style={{
+          left: `${mousePos.x - 16}px`,
+          top: `${mousePos.y - 16}px`,
+          background: 'radial-gradient(circle, rgba(217,179,102,0.4) 0%, transparent 70%)',
+          transform: 'translate(0, 0)',
+          transition: 'none',
+        }}
+      />
+
+      {/* Hero Section */}
+      <section className="relative w-full h-screen overflow-hidden bg-gradient-to-b from-stone-950 via-stone-900 to-stone-950 flex items-center justify-center">
+        {/* Animated Background Layers */}
+        <div className="absolute inset-0 opacity-40">
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-amber-900/30 via-stone-900 to-stone-950"
+            style={parallaxStyle(0.05)}
+          />
         </div>
-      </nav>
 
-      {/* Hero Section - Full Screen */}
-      <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-stone-900">
-        {/* Background Image Placeholder */}
-        <div className="absolute inset-0 bg-gradient-to-b from-stone-900/40 to-stone-900/60 z-10"></div>
-        <div className="absolute inset-0 bg-stone-800 opacity-50 z-5"></div>
+        {/* Floating Elements */}
+        <div className="absolute inset-0">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-96 h-96 rounded-full opacity-10"
+              style={{
+                background: `radial-gradient(circle, rgba(217,179,102,${0.3 - i * 0.05}) 0%, transparent 70%)`,
+                left: `${20 + i * 15}%`,
+                top: `${30 + i * 10}%`,
+                animation: `float ${8 + i * 2}s ease-in-out infinite`,
+              }}
+            />
+          ))}
+        </div>
 
-        {/* Content */}
-        <div className="relative z-20 text-center space-y-8 px-6">
+        {/* Hero Content */}
+        <div className="relative z-20 text-center px-6 space-y-8 max-w-4xl mx-auto">
           <div className="space-y-6">
-            <h1 className="text-7xl md:text-8xl font-serif text-stone-50 font-light tracking-tight">
+            <div className="inline-block px-6 py-2 bg-gradient-to-r from-amber-900/20 to-amber-800/20 border border-amber-700/40 rounded-full backdrop-blur-sm">
+              <span className="text-amber-200 text-sm font-light tracking-widest uppercase">
+                Luxury Hospitality Redefined
+              </span>
+            </div>
+
+            <h1 className="text-7xl md:text-8xl font-serif text-stone-50 font-light leading-tight tracking-tight">
               Hotel Sai Darshan
             </h1>
-            <p className="text-2xl md:text-3xl text-stone-200 font-light tracking-wide">
-              A calm, comfortable and refined stay
+
+            <p className="text-2xl md:text-3xl text-amber-100 font-light tracking-wide">
+              A Refined Stay Experience
+            </p>
+
+            <p className="text-lg text-stone-300 font-light max-w-2xl mx-auto">
+              Where luxury meets affordability. Experience premium comfort in every detail.
             </p>
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons with Glow */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
             <button
               onClick={whatsappClick}
-              className="px-10 py-3 text-stone-900 bg-stone-100 hover:bg-stone-200 transition-colors duration-300 font-light tracking-wide text-sm"
+              className="group relative px-10 py-4 bg-gradient-to-r from-amber-600 to-amber-700 text-stone-950 font-semibold rounded-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
             >
-              Book via WhatsApp
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="relative flex items-center gap-2">
+                💬 Book via WhatsApp
+              </span>
             </button>
+
             <button
               onClick={callClick}
-              className="px-10 py-3 text-stone-100 border border-stone-100 hover:bg-stone-100/10 transition-colors duration-300 font-light tracking-wide text-sm"
+              className="group relative px-10 py-4 border-2 border-amber-600 text-amber-100 font-semibold rounded-lg hover:bg-amber-900/20 transition-all duration-300 backdrop-blur-sm"
             >
-              Call Hotel
+              <span className="relative flex items-center gap-2">
+                📞 Call Now
+              </span>
             </button>
           </div>
 
-          <p className="text-stone-300 text-sm font-light pt-4">📞 +91 9712227011</p>
+          <p className="text-stone-400 text-sm font-light">+91 9712227011 • 24/7 Available</p>
         </div>
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="animate-bounce text-stone-300">
+          <div className="animate-pulse-slow text-amber-600">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </div>
         </div>
       </section>
 
       {/* Rooms Section */}
-      <section id="rooms" className="py-32 bg-stone-50">
-        <div className="max-w-7xl mx-auto px-6">
+      <section id="rooms" className="relative py-32 bg-gradient-to-b from-stone-950 to-stone-900 px-6">
+        <div className="max-w-7xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-24 space-y-4">
-            <h2 className="text-5xl font-serif text-stone-900 font-light tracking-tight">
-              Our Rooms
+            <h2 className="text-6xl font-serif text-stone-50 font-light tracking-tight">
+              Curated Rooms
             </h2>
-            <p className="text-lg text-stone-600 font-light max-w-2xl mx-auto">
-              Each space is meticulously designed to provide the utmost comfort and elegance
+            <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-800 mx-auto" />
+            <p className="text-xl text-amber-100 font-light max-w-2xl mx-auto">
+              Each room tells a story of refined comfort and luxury
             </p>
           </div>
 
           {/* Room Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {rooms.map((room) => (
-              <div key={room.id} className="flex flex-col space-y-8">
-                {/* Room Image Placeholder */}
-                <div className="aspect-square bg-stone-200 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-stone-300 to-stone-200 flex items-center justify-center">
-                    <svg className="w-32 h-32 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M3 12l2.422-3.865a3 3 0 005.156 0L13 4m0 0l2.422 3.865a3 3 0 005.156 0L21 12M3 12a9 9 0 0118 0m-9 9v-6m0 0l2.422-3.865a3 3 0 005.156 0L21 12" />
+              <div
+                key={room.id}
+                onMouseEnter={() => setHoveredRoom(room.id)}
+                onMouseLeave={() => setHoveredRoom(null)}
+                className="group relative"
+              >
+                {/* Card with 3D effect */}
+                <div className="relative bg-gradient-to-b from-stone-800 to-stone-900 rounded-2xl overflow-hidden border border-amber-900/40 transition-all duration-500"
+                  style={{
+                    transform: hoveredRoom === room.id ? 'translateY(-12px) rotateX(5deg)' : 'translateY(0)',
+                    boxShadow: hoveredRoom === room.id
+                      ? '0 25px 50px rgba(217, 119, 6, 0.3), 0 0 40px rgba(217, 119, 6, 0.15)'
+                      : '0 10px 30px rgba(0, 0, 0, 0.4)',
+                  }}
+                >
+                  {/* Room Image Placeholder with Overlay */}
+                  <div className="relative h-64 bg-gradient-to-br from-amber-900/40 to-stone-900 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-transparent to-transparent" />
+                    <svg className="w-full h-full opacity-20 text-amber-700" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4-2h2v20h-2zm4 4h2v16h-2z" />
                     </svg>
-                  </div>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500"></div>
-                </div>
 
-                {/* Room Details */}
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <h3 className="text-3xl font-serif text-stone-900 font-light">
-                      {room.title}
-                    </h3>
-                    <p className="text-stone-600 text-sm font-light leading-relaxed">
-                      {room.description}
-                    </p>
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
 
-                  {/* Pricing */}
-                  <div className="border-t border-b border-stone-300 py-6">
-                    <div className="grid grid-cols-2 gap-8">
-                      <div className="space-y-2">
-                        <p className="text-xs text-stone-600 uppercase tracking-widest font-semibold">
-                          Non-AC
-                        </p>
-                        <p className="text-2xl font-serif text-stone-900 font-light">
-                          {room.nonAc}
-                        </p>
-                        <p className="text-xs text-stone-500">per night</p>
+                  {/* Card Content */}
+                  <div className="relative p-8 space-y-6">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-3xl font-serif text-stone-50 font-light">
+                          {room.title}
+                        </h3>
+                        <span className="text-xs uppercase tracking-widest text-amber-400 font-semibold">
+                          {room.tagline}
+                        </span>
                       </div>
-                      <div className="space-y-2">
-                        <p className="text-xs text-stone-600 uppercase tracking-widest font-semibold">
-                          AC
-                        </p>
-                        <p className="text-2xl font-serif text-stone-900 font-light">
-                          {room.ac}
-                        </p>
-                        <p className="text-xs text-stone-500">per night</p>
+                      <p className="text-amber-100/80 text-sm font-light">
+                        {room.description}
+                      </p>
+                    </div>
+
+                    {/* Pricing */}
+                    <div className="space-y-4 pt-4 border-t border-amber-900/30">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-1">
+                          <p className="text-xs uppercase tracking-widest text-amber-600 font-semibold">
+                            Non-AC
+                          </p>
+                          <p className="text-3xl font-serif text-amber-400 font-light">
+                            ₹{room.nonAc}
+                          </p>
+                          <p className="text-xs text-stone-500">per night</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xs uppercase tracking-widest text-amber-600 font-semibold">
+                            AC
+                          </p>
+                          <p className="text-3xl font-serif text-amber-400 font-light">
+                            ₹{room.ac}
+                          </p>
+                          <p className="text-xs text-stone-500">per night</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Amenities */}
-                  <div className="space-y-3">
-                    {room.amenities.map((amenity, idx) => (
-                      <div key={idx} className="flex items-start space-x-3">
-                        <span className="text-amber-700 mt-1">•</span>
-                        <span className="text-sm text-stone-700 font-light">{amenity}</span>
-                      </div>
-                    ))}
-                  </div>
+                    {/* Features */}
+                    <div className="space-y-2 pt-4">
+                      {room.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center space-x-3">
+                          <span className="text-amber-600">→</span>
+                          <span className="text-sm text-stone-300 font-light">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
 
-                  {/* Reserve Button */}
-                  <button
-                    onClick={whatsappClick}
-                    className="w-full py-4 border border-stone-900 text-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all duration-300 font-light tracking-wide text-sm mt-6"
-                  >
-                    Reserve Room
-                  </button>
+                    {/* Reserve Button */}
+                    <button
+                      onClick={whatsappClick}
+                      className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-stone-950 font-semibold rounded-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    >
+                      Reserve Now
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -238,99 +302,100 @@ export default function Home() {
       </section>
 
       {/* Amenities Section */}
-      <section className="py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-            <div className="space-y-8">
-              <h2 className="text-4xl font-serif text-stone-900 font-light">
-                Premium Amenities
-              </h2>
-              <div className="space-y-8">
-                {[
-                  { title: 'Refined Comfort', desc: 'Premium furnishings selected for elegance and durability' },
-                  { title: 'High-Speed Connectivity', desc: 'Seamless WiFi throughout the property' },
-                  { title: 'Secure Parking', desc: 'Protected and convenient vehicle storage' },
-                  { title: 'Always Available', desc: '24/7 dedicated support and assistance' },
-                ].map((item, idx) => (
-                  <div key={idx} className="border-l-2 border-amber-700 pl-6">
-                    <h3 className="text-lg font-serif text-stone-900 font-light mb-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-stone-600 text-sm font-light">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+      <section className="relative py-32 bg-gradient-to-b from-stone-900 to-stone-950 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20 space-y-4">
+            <h2 className="text-6xl font-serif text-stone-50 font-light tracking-tight">
+              Premium Amenities
+            </h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-800 mx-auto" />
+          </div>
 
-            {/* Right Column - Image Placeholder */}
-            <div className="aspect-square bg-stone-200 hidden md:flex items-center justify-center">
-              <svg className="w-48 h-48 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-            </div>
+          {/* Animated Amenities Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {amenities.map((amenity, idx) => (
+              <div
+                key={idx}
+                className="group relative p-8 bg-gradient-to-br from-stone-800/50 to-stone-900/50 rounded-xl border border-amber-900/30 hover:border-amber-600/60 transition-all duration-500 backdrop-blur-sm"
+                style={{
+                  animation: `slideInUp 0.6s ease-out ${idx * 0.1}s both`,
+                  '--delay': `${idx * 0.1}s`,
+                } as React.CSSProperties}
+              >
+                <div className="text-5xl mb-4 group-hover:scale-125 transition-transform duration-300">
+                  {amenity.icon}
+                </div>
+                <h3 className="text-xl font-serif text-stone-50 font-light mb-2">
+                  {amenity.label}
+                </h3>
+                <p className="text-sm text-stone-400 font-light">
+                  {amenity.desc}
+                </p>
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-600/0 to-amber-600/0 group-hover:from-amber-600/5 group-hover:to-amber-600/0 rounded-xl transition-all duration-500" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Location Section */}
-      <section id="location" className="py-32 bg-stone-50">
-        <div className="max-w-7xl mx-auto px-6">
+      <section id="location" className="relative py-32 bg-stone-950 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-5xl font-serif text-stone-900 font-light">Location</h2>
-            <p className="text-lg text-stone-600 font-light">
-              Situated in a prime location with easy access to attractions
-            </p>
+            <h2 className="text-6xl font-serif text-stone-50 font-light tracking-tight">
+              Location & Accessibility
+            </h2>
+            <div className="w-20 h-1 bg-gradient-to-r from-amber-600 to-amber-800 mx-auto" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Map Placeholder */}
-            <div className="aspect-square bg-stone-300 flex items-center justify-center">
-              <div className="text-center">
-                <svg className="w-24 h-24 text-stone-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* Map with Zoom Animation */}
+            <div className="group relative h-96 bg-gradient-to-br from-stone-800 to-stone-900 rounded-2xl overflow-hidden border border-amber-900/40">
+              <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:opacity-50 transition-opacity duration-500">
+                <svg className="w-32 h-32 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <p className="text-stone-600 text-sm font-light">Map Coming Soon</p>
               </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 to-transparent" />
+              <p className="absolute inset-0 flex items-center justify-center text-stone-400 text-sm font-light">
+                Interactive Map Coming Soon
+              </p>
             </div>
 
-            {/* Address & Contact */}
-            <div className="flex flex-col justify-center space-y-12">
+            {/* Contact Info */}
+            <div className="flex flex-col justify-center space-y-8">
               <div className="space-y-4">
-                <h3 className="text-2xl font-serif text-stone-900 font-light">Address</h3>
-                <p className="text-lg text-stone-700 font-light leading-relaxed">
+                <h3 className="text-4xl font-serif text-stone-50 font-light">
+                  Hotel Address
+                </h3>
+                <p className="text-lg text-amber-100/80 font-light leading-relaxed">
                   Hotel Sai Darshan<br />
-                  <span className="text-stone-600">[Location to be updated]</span><br />
+                  <span className="text-stone-500">[Prime Location to be Updated]</span><br />
                   India
                 </p>
               </div>
 
-              <a
-                href="https://maps.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-8 py-4 border border-stone-900 text-stone-900 hover:bg-stone-900 hover:text-stone-50 transition-all duration-300 font-light tracking-wide text-sm w-fit"
+              <button
+                onClick={() => window.open('https://maps.google.com', '_blank')}
+                className="inline-block px-8 py-4 bg-gradient-to-r from-amber-600 to-amber-700 text-stone-950 font-semibold rounded-lg hover:shadow-xl transition-all duration-300"
               >
                 Get Directions
-              </a>
+              </button>
 
-              <div className="space-y-6 border-t border-stone-300 pt-12">
+              <div className="space-y-6 border-t border-amber-900/30 pt-8">
                 <div>
-                  <p className="text-xs text-stone-600 uppercase tracking-widest font-semibold mb-2">
+                  <p className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">
                     Telephone
                   </p>
-                  <a
-                    href="tel:+919712227011"
-                    className="text-lg text-stone-900 font-light hover:text-stone-700 transition-colors duration-300"
-                  >
+                  <a href="tel:+919712227011" className="text-2xl font-serif text-stone-50 font-light hover:text-amber-400 transition-colors duration-300">
                     +91 9712227011
                   </a>
                 </div>
                 <div>
-                  <p className="text-xs text-stone-600 uppercase tracking-widest font-semibold mb-2">
+                  <p className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">
                     Availability
                   </p>
-                  <p className="text-stone-700 font-light">24/7 • Every day of the year</p>
+                  <p className="text-stone-300 font-light">24/7 • Every Day of the Year</p>
                 </div>
               </div>
             </div>
@@ -338,125 +403,176 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
-      <section id="contact" className="py-32 bg-stone-900 text-stone-50">
-        <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
-          <h2 className="text-5xl font-serif font-light tracking-tight">
-            Begin Your Stay
+      {/* Final CTA */}
+      <section className="relative py-24 bg-gradient-to-b from-stone-950 to-black px-6">
+        <div className="max-w-4xl mx-auto text-center space-y-10">
+          <h2 className="text-5xl md:text-6xl font-serif text-stone-50 font-light tracking-tight">
+            Begin Your Luxury Journey
           </h2>
-          <p className="text-xl text-stone-200 font-light">
-            Reserve your room and experience refined comfort
-          </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <button
               onClick={whatsappClick}
-              className="px-12 py-4 bg-stone-100 text-stone-900 hover:bg-stone-50 transition-colors duration-300 font-light tracking-wide text-sm"
+              className="group relative px-12 py-4 bg-gradient-to-r from-amber-600 to-amber-700 text-stone-950 font-semibold rounded-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
             >
-              Book via WhatsApp
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="relative">Book via WhatsApp</span>
             </button>
+
             <button
               onClick={callClick}
-              className="px-12 py-4 border border-stone-100 text-stone-100 hover:bg-stone-100/10 transition-colors duration-300 font-light tracking-wide text-sm"
+              className="group relative px-12 py-4 border-2 border-amber-600 text-amber-100 font-semibold rounded-lg hover:bg-amber-900/20 transition-all duration-300 backdrop-blur-sm"
             >
-              Call Us
+              <span className="relative">Call Now</span>
             </button>
           </div>
 
-          <p className="text-sm text-stone-400 font-light">📞 +91 9712227011 • Available 24/7</p>
+          <p className="text-stone-400 text-sm font-light">+91 9712227011</p>
         </div>
       </section>
 
-      {/* Floating Action Button - Mobile */}
-      <div className="fixed bottom-8 right-8 md:hidden z-40 flex flex-col gap-3">
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-40 lg:hidden">
         <button
           onClick={whatsappClick}
-          className="w-14 h-14 bg-stone-900 text-stone-50 rounded-full flex items-center justify-center text-lg shadow-lg hover:bg-stone-800 transition-colors duration-300 font-light"
-          title="Book via WhatsApp"
+          className="w-16 h-16 bg-gradient-to-br from-amber-600 to-amber-700 text-white rounded-full flex items-center justify-center text-2xl shadow-2xl hover:scale-110 transition-transform duration-300"
         >
           💬
         </button>
         <button
           onClick={callClick}
-          className="w-14 h-14 bg-stone-900 text-stone-50 rounded-full flex items-center justify-center text-lg shadow-lg hover:bg-stone-800 transition-colors duration-300 font-light"
-          title="Call Hotel"
+          className="w-16 h-16 bg-gradient-to-br from-amber-600 to-amber-700 text-white rounded-full flex items-center justify-center text-2xl shadow-2xl hover:scale-110 transition-transform duration-300"
         >
           📞
         </button>
       </div>
 
       {/* Footer */}
-      <footer className="bg-stone-900 text-stone-400 py-16 border-t border-stone-800">
-        <div className="max-w-7xl mx-auto px-6">
+      <footer className="bg-black border-t border-amber-900/20 py-16 px-6">
+        <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="space-y-4">
-              <h3 className="text-stone-100 font-serif font-light text-lg tracking-wide">
-                HOTEL SAI DARSHAN
+              <h3 className="text-2xl font-serif text-amber-400 font-light">
+                Hotel Sai Darshan
               </h3>
-              <p className="text-sm font-light leading-relaxed">
-                A sanctuary of calm and refined comfort
+              <p className="text-stone-400 text-sm font-light">
+                Luxury redefined. Affordability elevated.
               </p>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="text-stone-100 text-xs uppercase tracking-widest font-semibold">
-                Navigate
-              </h4>
-              <ul className="space-y-2 text-sm font-light">
-                <li>
-                  <button onClick={() => scrollToSection('rooms')} className="hover:text-stone-100 transition-colors duration-300">
-                    Rooms
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => scrollToSection('location')} className="hover:text-stone-100 transition-colors duration-300">
-                    Location
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-stone-100 text-xs uppercase tracking-widest font-semibold">
-                Contact
-              </h4>
-              <div className="text-sm font-light space-y-2">
-                <p>+91 9712227011</p>
-                <p className="text-stone-500">Available 24/7</p>
+            {[
+              {
+                title: 'Explore',
+                links: [
+                  { label: 'Rooms', id: 'rooms', type: 'section' as const },
+                  { label: 'Location', id: 'location', type: 'section' as const },
+                ],
+              },
+              {
+                title: 'Contact',
+                links: [
+                  { label: '+91 9712227011', href: 'tel:+919712227011', type: 'link' as const },
+                  { label: 'WhatsApp Chat', href: '#', type: 'action' as const },
+                ],
+              },
+              {
+                title: 'Information',
+                links: [
+                  { label: 'Privacy Policy', href: '#', type: 'link' as const },
+                  { label: 'Terms & Conditions', href: '#', type: 'link' as const },
+                ],
+              },
+            ].map((col, idx) => (
+              <div key={idx} className="space-y-4">
+                <h4 className="text-amber-600 text-xs uppercase tracking-widest font-semibold">
+                  {col.title}
+                </h4>
+                <ul className="space-y-2">
+                  {col.links.map((link, i) => (
+                    <li key={i}>
+                      {link.type === 'section' ? (
+                        <button
+                          onClick={() => scrollToSection(link.id!)}
+                          className="text-stone-400 hover:text-amber-400 transition-colors duration-300 text-sm font-light"
+                        >
+                          {link.label}
+                        </button>
+                      ) : link.type === 'action' ? (
+                        <button
+                          onClick={whatsappClick}
+                          className="text-stone-400 hover:text-amber-400 transition-colors duration-300 text-sm font-light"
+                        >
+                          {link.label}
+                        </button>
+                      ) : (
+                        <a
+                          href={link.href}
+                          className="text-stone-400 hover:text-amber-400 transition-colors duration-300 text-sm font-light"
+                        >
+                          {link.label}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-
-            <div className="space-y-4">
-              <h4 className="text-stone-100 text-xs uppercase tracking-widest font-semibold">
-                Reserve
-              </h4>
-              <button
-                onClick={whatsappClick}
-                className="text-sm font-light hover:text-stone-100 transition-colors duration-300"
-              >
-                WhatsApp Booking →
-              </button>
-            </div>
+            ))}
           </div>
 
-          <div className="border-t border-stone-800 pt-8 text-center text-xs text-stone-500 font-light">
-            <p>&copy; 2024 Hotel Sai Darshan. All rights reserved.</p>
+          <div className="border-t border-amber-900/20 pt-8 text-center text-stone-500 text-sm font-light">
+            <p>&copy; 2024 Hotel Sai Darshan. An Experience in Luxury.</p>
           </div>
         </div>
       </footer>
 
       <style jsx>{`
-        @keyframes bounce {
+        @keyframes float {
           0%, 100% {
-            transform: translateY(0);
+            transform: translateY(0px) translateX(0px);
+          }
+          25% {
+            transform: translateY(-20px) translateX(10px);
           }
           50% {
-            transform: translateY(-10px);
+            transform: translateY(-40px) translateX(0px);
+          }
+          75% {
+            transform: translateY(-20px) translateX(-10px);
           }
         }
 
-        .animate-bounce {
-          animation: bounce 2s infinite;
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+
+        .animate-pulse-slow {
+          animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Smooth scrolling with momentum */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* Glassmorphism for cards */
+        .backdrop-blur-sm {
+          backdrop-filter: blur(4px);
         }
       `}</style>
     </div>
